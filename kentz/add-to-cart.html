@@ -1,0 +1,369 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart</title>
+    <link rel="stylesheet" href="/kentz/styles/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #ec94e9;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        header .menu-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        #nav-menu {
+            display: none;
+            position: absolute; 
+            top: 55px; 
+            right: 0; 
+            background-color: #ec94e9; 
+            border-radius: 5px;
+            z-index: 1000;
+        }
+
+        #nav-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #nav-menu ul li {
+            margin: 10px 0;
+        }
+
+        #nav-menu ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            display: block; 
+            padding: 10px; 
+        }
+
+        #cart-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .compact-product-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            position: relative;
+            transition: background-color 0.3s ease;
+            justify-content: space-between; 
+        }
+
+        .compact-product-item:hover {
+            background-color: #eaeaea;
+        }
+
+        .compact-product-item img {
+            max-width: 60px;
+            height: auto;
+            margin-right: 15px;
+            border-radius: 5px;
+        }
+
+        .compact-product-item .details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .compact-product-item h2 {
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .compact-product-item .info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .product-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px; 
+        }
+
+        .product-actions input[type="number"] {
+            width: 30%;
+            max-width: 80px; 
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .product-actions input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .product-actions button {
+            padding: 5px 10px;
+            background-color: #ec94e9;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+            align-self: center;
+        }
+
+        .product-actions button:hover {
+            background-color: #d87aab;
+        }
+
+        #cart-summary,
+        #buy-summary {
+            padding: 20px;
+            border-top: 2px solid #ec94e9;
+            margin-top: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #cart-summary h2,
+        #buy-summary h2 {
+            margin: 0 0 10px;
+            font-size: 20px;
+            color: #ec94e9;
+        }
+
+        #cart-summary p,
+        #buy-summary p {
+            font-size: 16px;
+            margin: 0;
+        }
+
+        #buy-summary {
+            display: none;
+        }
+
+        #buy-items {
+            margin-top: 10px;
+        }
+
+        #buy-items .compact-product-item {
+            background-color: #f3f3f3;
+        }
+
+        #buy-summary p {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #buy-button {
+            padding: 10px 20px;
+            background-color: #ec94e9;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        #buy-button:hover {
+            background-color: #d87aab;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>My Cart</h1>
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+        <nav id="nav-menu">
+            <ul>
+                <li><a href="index.html" onclick="closeMenu()">Dashboard</a></li>
+                <li><a href="add-product.html">Add Product</a></li>
+                <li><a href="settings.html">Settings</a></li>
+                <li><a href="reglog.html" onclick="closeMenu()">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div id="cart-container">
+            <div id="cart-items">
+                <!-- Unchecked items will be dynamically inserted here -->
+            </div>
+            <div id="checked-items">
+                <!-- Checked items will be dynamically inserted here -->
+            </div>
+            <div id="cart-summary">
+                <h2>Cart Summary</h2>
+                <p id="total-price">Total Price: ₱0.00</p>
+            </div>
+            <button id="buy-button" onclick="handleBuy()">Buy</button>
+            <div id="buy-summary">
+                <h2>Purchase Summary</h2>
+                <div id="buy-items">
+                    <!-- Purchased items will be dynamically inserted here -->
+                </div>
+                <p id="buy-total">Total Price: ₱0.00</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="/kentz/script/script.js"></script>
+    <script>
+           // Moload sa cart items inig abli sa page
+    function loadCart() {
+        const cartContainer = document.getElementById('cart-items');
+        const checkedContainer = document.getElementById('checked-items');
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let totalPrice = 0;
+
+        cartContainer.innerHTML = ''; // Limpyohan ang wala pa na-check nga items
+        checkedContainer.innerHTML = ''; // Limpyohan ang na-check nga items
+
+        // Para sa matag item sa cart
+        cart.forEach((product, index) => {
+            const productItem = document.createElement('div');
+            productItem.className = 'compact-product-item';
+            productItem.dataset.index = index;
+            productItem.innerHTML = `
+                <img src="${product.image}" alt="${product.name}">
+                <div class="details">
+                    <h2>${product.name}</h2>
+                    <div class="info">
+                        <p>₱${product.price}</p>
+                        <div class="product-actions">
+                            <input type="checkbox" ${product.checked ? 'checked' : ''} onchange="toggleCheck(${index}, this.checked)">
+                            <input type="number" value="${product.quantity}" min="1" onchange="updateQuantity(${index}, this.value)">
+                            <button onclick="removeFromCart(${index})">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Ibutang sa checkedContainer kung checked, kung dili sa cartContainer ibutang
+            if (product.checked) {
+                checkedContainer.appendChild(productItem);
+            } else {
+                cartContainer.appendChild(productItem);
+            }
+
+            // Kwentahon ang total price sa tanang items
+            totalPrice += product.price * product.quantity;
+        });
+
+        document.getElementById('total-price').textContent = `Total Price: ₱${totalPrice.toFixed(2)}`;
+    }
+
+    // Para mo-check o dili ang item
+    function toggleCheck(index, isChecked) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart[index].checked = isChecked;
+        localStorage.setItem('cart', JSON.stringify(cart));
+        loadCart(); // I-reload ang cart para makita ang mga changes
+    }
+
+    // Para i-update ang quantity sa item
+    function updateQuantity(index, newQuantity) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart[index].quantity = parseInt(newQuantity);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        loadCart(); // I-reload ang cart para makita ang mga changes
+    }
+
+    // Para tangtangon ang item sa cart
+    function removeFromCart(index) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart.splice(index, 1); // Tangtangon ang product
+        localStorage.setItem('cart', JSON.stringify(cart));
+        loadCart(); // I-reload ang cart para makita ang mga changes
+    }
+
+    // Para mo-handle sa pag-buy sa items
+    function handleBuy() {
+        const buySummary = document.getElementById('buy-summary');
+        const buyItems = document.getElementById('buy-items');
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let totalPrice = 0;
+
+        buyItems.innerHTML = ''; // Limpyohan ang previous buy items
+
+        // Para sa matag item nga naka-check
+        cart.forEach((product) => {
+            if (product.checked) {
+                const itemSummary = document.createElement('div');
+                itemSummary.className = 'compact-product-item';
+                itemSummary.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <div class="details">
+                        <h2>${product.name}</h2>
+                        <div class="info">
+                            <p>₱${product.price} x ${product.quantity}</p>
+                        </div>
+                    </div>
+                `;
+                buyItems.appendChild(itemSummary);
+                totalPrice += product.price * product.quantity;
+            }
+        });
+
+        document.getElementById('buy-total').textContent = `Total Price: ₱${totalPrice.toFixed(2)}`;
+        buySummary.style.display = 'block';
+
+        // Tangtangon ang na-check nga items gikan sa cart
+        const remainingCart = cart.filter(product => !product.checked);
+        localStorage.setItem('cart', JSON.stringify(remainingCart));
+        loadCart(); // I-reload ang cart para makita ang mga changes
+    }
+
+    // Para i-toggle ang visibility sa menu
+    function toggleMenu() {
+        const menu = document.getElementById('nav-menu');
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Para i-close ang menu
+    function closeMenu() {
+        document.getElementById('nav-menu').style.display = 'none';
+    }
+
+
+         // Load cart items on page load
+    window.onload = loadCart;
+    </script>
+</body>
+</html>

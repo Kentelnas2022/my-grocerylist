@@ -1,0 +1,300 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #ec94e9;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.menu-btn {
+    font-size: 20px;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+
+nav#nav-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 50px;
+    background-color: #ec94e9;
+    border: 1px solid #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+nav#nav-menu ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav#nav-menu li {
+    margin-bottom: 10px;
+}
+
+nav#nav-menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+nav#nav-menu a:hover {
+    text-decoration: underline;
+}
+
+/* Form Container */
+#form-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+/* Form Styles */
+form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+form input, form select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+form input[type="file"] {
+    padding: 0;
+}
+
+form button {
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #45a049;
+}
+
+
+label {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="file"],
+select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+input[type="file"] {
+    padding: 0; /* Remove padding for file inputs */
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #ec94e9;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #d87aab;
+}
+
+/* Container for category filter and search */
+#filter-container {
+    display: flex;
+    align-items: center; /* Align items vertically centered */
+    justify-content: space-between; /* Space between category filter and search input */
+    max-width: 100%;
+    margin: 5px;
+    padding: 3px;
+}
+
+/* Category Filter Styles */
+#category-filter {
+    padding: 3px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#category-filter label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+#category-select {
+    width: 165px; /* Adjust width if needed */
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Search Form Styles */
+#search-form {
+    padding: 3px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    flex-grow: 1; /* Allows search form to take up remaining space */
+    margin-left: 10px; /* Space between category filter and search input */
+}
+
+#search-form label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+#search-input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Product List Styles */
+#product-list {
+    max-width: 1200px;
+    margin: 20px auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px; /* Reduced gap between items */
+    padding: 0;
+    overflow-x: auto; /* Allows horizontal scrolling if needed */
+}
+
+.product-item {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    max-width: 200px; /* Adjusted width to make items shorter */
+    box-sizing: border-box;
+    text-align: center;
+    flex: 1 1 auto; /* Allows the item to grow and shrink */
+}
+
+.product-item img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    display: block;
+    margin: 0 auto; /* Center image */
+}
+
+.product-item h2 {
+    margin: 10px 0 5px;
+    font-size: 14px; /* Reduced font size for a shorter appearance */
+    overflow: hidden; /* Ensures text does not overflow */
+    text-overflow: ellipsis; /* Adds ellipsis if text is too long */
+    white-space: nowrap; /* Prevents text from wrapping */
+}
+
+.product-item p {
+    margin: 5px 0;
+    font-size: 12px; /* Reduced font size for better alignment */
+    overflow: hidden; /* Ensures text does not overflow */
+    text-overflow: ellipsis; /* Adds ellipsis if text is too long */
+    white-space: nowrap; /* Prevents text from wrapping */
+}
+
+.product-actions button {
+    display: inline-block;
+    padding: 5px 5px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.product-actions button:hover {
+    background-color: hsl(211, 96%, 50%);
+}
+
+
+/* Ensure the product list items are horizontally scrollable if necessary */
+@media (max-width: 768px) {
+    #product-list {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; /* Adds smooth scrolling on iOS */
+    }
+    .product-item {
+        flex: 0 0 auto; /* Prevents shrinking */
+        max-width: 180px; /* Adjusts width for smaller screens */
+    }
+}
+
+/* Notification Styles */
+#notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: none;
+}
+
+#notification.hidden {
+    display: none;
+}
+
