@@ -1,0 +1,97 @@
+/* Basic reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Navbar styles */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    position: relative; /* Relative positioning for the dropdown and shopping icon */
+}
+
+.burger-menu {
+    cursor: pointer;
+    font-size: 24px;
+    color: white;
+}
+
+.nav-title {
+    text-align: center;
+    flex-grow: 1;
+}
+
+/* Shopping icon position */
+.shopping-icon {
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    position: absolute;
+    right: 20px; /* Keep it at the far right */
+    top: 50%; /* Vertically center */
+    transform: translateY(-50%);
+}
+
+/* Dropdown navigation links */
+.nav-links {
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background-color: #444;
+    width: 200px;
+    z-index: 10; /* Ensure it appears above other elements */
+}
+
+.nav-links a {
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+}
+
+.nav-links a:hover {
+    background-color: #555;
+}
+
+/* Show the navigation links when they are toggled */
+.nav-links.active {
+    display: flex;
+}
+
+/* Media queries for mobile responsiveness */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; /* Hide links by default on small screens */
+        flex-direction: column;
+        background-color: #333;
+        position: absolute;
+        top: 50px;
+        right: 20px;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    .nav-links.active {
+        display: flex; /* Show links when active */
+    }
+
+    .burger-menu {
+        display: block; /* Show burger menu on smaller screens */
+    }
+}
+
+/* Content area styling */
+.content {
+    padding: 20px;
+}

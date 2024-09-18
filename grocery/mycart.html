@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart</title>
+    <link rel="stylesheet" href="/grocery/styles/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+        }
+
+        .burger-menu {
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+        }
+
+        .nav-title {
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .nav-links {
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            background-color: #444;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 200px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .nav-links a {
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .nav-links a:hover {
+            background-color: #555;
+        }
+
+        .nav-links.active {
+            display: flex; /* Show links when active */
+        }
+
+        /* Cart items styling */
+        .cart-item {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            max-width: 500px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .cart-item img {
+            max-width: 80px; /* Adjust image size */
+            height: auto;
+            border-radius: 8px;
+            margin-right: 10px;
+        }
+
+        .cart-item div {
+            flex-grow: 1;
+        }
+
+        .cart-item h3 {
+            margin-bottom: 5px;
+        }
+
+        .cart-item p {
+            margin: 5px 0;
+        }
+
+        .remove-item {
+            cursor: pointer;
+            color: #d9534f;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .remove-item:hover {
+            color: #c9302c;
+        }
+
+        .total-price {
+            text-align: right;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .quantity-input {
+            width: 60px;
+            padding: 5px;
+            margin: 0 10px;
+            text-align: center;
+        }
+
+        .checkbox {
+            margin-right: 10px;
+        }
+
+        .checked {
+            transform: translateY(20px); /* Moves item down when checked */
+            opacity: 0.6; /* Optional: reduce opacity for checked items */
+            text-decoration: line-through; /* Cross out the item */
+        }
+
+        .purchase-history-item {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            max-width: 500px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .purchase-history-item img {
+            max-width: 80px; /* Adjust image size */
+            height: auto;
+            border-radius: 8px;
+            margin-right: 10px;
+        }
+
+        .purchase-history-item div {
+            flex-grow: 1;
+        }
+
+        .purchase-history-item h3 {
+            margin-bottom: 5px;
+        }
+
+        .purchase-history-item p {
+            margin: 5px 0;
+        }
+
+        .buy-selected-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .buy-selected-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="burger-menu" onclick="toggleMenu()">☰</div>
+        <h1 class="nav-title">My Cart</h1>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Dashboard</a>
+            <a href="add-product.html">Add Product</a>
+            <a href="reglog.html">Logout</a>
+        </div>
+    </nav>
+
+    <div class="content">
+        <h2 style="text-align: center;">Cart Items</h2>
+        <div id="cartItems" class="cart-list"></div>
+        <div id="totalPrice" class="total-price">Total: ₱0.00</div>
+        <button class="buy-selected-button" onclick="buySelected()">Buy Selected</button>
+        <div id="purchaseHistory" class="purchase-history"></div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        function updateCart() {
+            const cartItemsContainer = document.getElementById('cartItems');
+            const totalPriceContainer = document.getElementById('totalPrice');
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            cartItemsContainer.innerHTML = ''; // Clear existing items
+            let totalPrice = 0;
+
+            cart.forEach((product, index) => {
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'checkbox';
+                checkbox.dataset.index = index;
+                checkbox.onchange = () => updateItemState(checkbox, index);
+                cartItem.appendChild(checkbox);
+
+                const img = document.createElement('img');
+                img.src = product.image || 'default-image.png'; // Use a default image if none provided
+                img.alt = product.name;
+                cartItem.appendChild(img);
+
+                const details = document.createElement('div');
+
+                const productName = document.createElement('h3');
+                productName.textContent = product.name;
+                details.appendChild(productName);
+
+                const price = document.createElement('p');
+                price.textContent = `Price: ₱${product.price.toFixed(2)}`;
+                details.appendChild(price);
+
+                const quantityInput = document.createElement('input');
+                quantityInput.type = 'number';
+                quantityInput.value = product.quantity;
+                quantityInput.className = 'quantity-input';
+                quantityInput.min = 1;
+                quantityInput.onchange = () => updateQuantity(index, quantityInput.value);
+                details.appendChild(quantityInput);
+
+                const removeIcon = document.createElement('i');
+                removeIcon.className = 'fas fa-trash remove-item';
+                removeIcon.onclick = () => removeFromCart(index);
+                details.appendChild(removeIcon);
+
+                cartItem.appendChild(details);
+                cartItemsContainer.appendChild(cartItem);
+
+                totalPrice += product.price * product.quantity;
+            });
+
+            totalPriceContainer.textContent = `Total: ₱${totalPrice.toFixed(2)}`;
+        }
+
+        function updateItemState(checkbox, index) {
+            const cartItems = document.querySelectorAll('.cart-item');
+            if (checkbox.checked) {
+                cartItems[index].classList.add('checked');
+            } else {
+                cartItems[index].classList.remove('checked');
+            }
+        }
+
+        function updateQuantity(index, quantity) {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart[index].quantity = parseInt(quantity);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart(); // Refresh cart view
+        }
+
+        function removeFromCart(index) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart(); // Refresh cart view
+        }
+
+        function buySelected() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const purchaseHistoryContainer = document.getElementById('purchaseHistory');
+            purchaseHistoryContainer.innerHTML = '<h3>Purchase History</h3>';
+
+            let historyTotal = 0;
+            const itemsToBuy = [];
+
+            // Collect checked items
+            cart.forEach((product, index) => {
+                const checkbox = document.querySelector(`input[data-index="${index}"]`);
+                if (checkbox.checked) {
+                    itemsToBuy.push({
+                        ...product,
+                        quantity: product.quantity
+                    });
+                    historyTotal += product.price * product.quantity;
+                }
+            });
+
+            // Create and display purchase history
+            itemsToBuy.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'purchase-history-item';
+
+                const img = document.createElement('img');
+                img.src = item.image || 'default-image.png'; // Use a default image if none provided
+                img.alt = item.name;
+                historyItem.appendChild(img);
+
+                const details = document.createElement('div');
+
+                const productName = document.createElement('h3');
+                productName.textContent = item.name;
+                details.appendChild(productName);
+
+                const price = document.createElement('p');
+                price.textContent = `Price: ₱${item.price.toFixed(2)}`;
+                details.appendChild(price);
+
+                const quantity = document.createElement('p');
+                quantity.textContent = `Quantity: ${item.quantity}`;
+                details.appendChild(quantity);
+
+                historyItem.appendChild(details);
+                purchaseHistoryContainer.appendChild(historyItem);
+            });
+
+            // Show total in purchase history
+            const historyTotalElement = document.createElement('div');
+            historyTotalElement.className = 'total-price';
+            historyTotalElement.textContent = `Total: ₱${historyTotal.toFixed(2)}`;
+            purchaseHistoryContainer.appendChild(historyTotalElement);
+
+            // Clear purchased items from cart
+            const updatedCart = cart.filter((_, index) => !document.querySelector(`input[data-index="${index}"]`).checked);
+            localStorage.setItem('cart', JSON.stringify(updatedCart));
+
+            // Refresh cart view
+            updateCart();
+        }
+
+        // Initialize the cart view on page load
+        document.addEventListener('DOMContentLoaded', updateCart);
+    </script>
+</body>
+</html>

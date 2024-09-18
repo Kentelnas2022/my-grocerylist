@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/grocery/styles/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    
+        body {
+            font-family: Arial, sans-serif;
+        }
+    
+        /* Navbar styles */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            position: relative;
+        }
+    
+        .burger-menu {
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+            z-index: 2; /* Ensure it appears above other elements */
+        }
+    
+        .nav-title {
+            text-align: center;
+            flex-grow: 1;
+        }
+    
+        .nav-links {
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            background-color: #444;
+            position: absolute;
+            top: 50px;
+            right: 0; /* Align it to the right */
+            width: 200px; /* Adjust width as needed */
+            padding: 10px;
+            border-radius: 8px;
+            z-index: 1; /* Ensure it appears above other elements */
+        }
+    
+        .nav-links a {
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            display: block;
+        }
+    
+        .nav-links a:hover {
+            background-color: #555;
+        }
+    
+        .nav-links.active {
+            display: flex; /* Show links when active */
+        }
+    
+        .shopping-icon {
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            z-index: 2; /* Ensure it appears above the nav-links */
+            display: flex;
+            align-items: center;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        /* Search, categories, and sorting */
+        .filters {
+            text-align: center;
+            margin: 20px;
+        }
+
+        .filters input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+
+        .filters select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin: 5px;
+            width: 45%;
+            display: inline-block;
+        }
+
+        .filters .select-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        /* Product items styling */
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .product-item {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .product-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .product-item .details {
+            margin-bottom: 10px;
+        }
+    
+        .product-item p {
+            margin: 5px 0;
+        }
+    
+        .edit-delete-buttons {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 10px;
+        }
+    
+        .edit-delete-buttons i {
+            cursor: pointer;
+            color: #333;
+        }
+    
+        .edit-delete-buttons i:hover {
+            color: #555;
+        }
+
+        .cart-icon-container {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .cart-icon-container i {
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+        }
+    
+        /* Media queries for mobile responsiveness */
+        @media (max-width: 768px) {
+            .nav-links {
+                /* Maintain position just for mobile view */
+                flex-direction: column;
+                background-color: #333;
+                top: 50px; /* Adjust to place it below the burger menu */
+                right: 0;
+                width: 40%; /* Adjust width for mobile view */
+            }
+    
+            .product-list {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+    
+            .product-item {
+                width: 100%;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="burger-menu" onclick="toggleMenu()">☰</div>
+        <h1 class="nav-title">Dashboard</h1>
+        <div class="nav-links" id="navLinks">
+            <a href="add-product.html">Add Product</a>
+            <a href="reglog.html">Logout</a>
+        </div>
+        <div class="shopping-icon" onclick="window.location.href='mycart.html'">
+            <i class="fas fa-shopping-cart"></i>
+            <div id="cartCount" class="cart-count">0</div>
+        </div>
+    </nav>
+
+    <div class="filters">
+        <input type="text" id="search" placeholder="Search products...">
+
+        <div class="select-container">
+            <select id="category">
+                <option value="">All Categories</option>
+                <option value="Fruits">Fruits</option>
+                <option value="Vegetable">Vegetable</option>
+                <option value="Canned goods">Canned goods</option>
+                <option value="Crackers">Crackers</option>
+            </select>
+
+            <select id="sort">
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="name-asc">Name: A to Z</option>
+                <option value="name-desc">Name: Z to A</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="content">
+        <h2 style="text-align: center;">Product List</h2>
+        <div id="productItems" class="product-list"></div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartCount = document.getElementById('cartCount');
+            cartCount.textContent = cart.length;
+        }
+
+        function addToCart(product) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push(product);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        function editProduct(index) {
+            window.location.href = `edit-product.html?index=${index}`;
+        }
+
+        function deleteProduct(index) {
+            let products = JSON.parse(localStorage.getItem('products')) || [];
+            products.splice(index, 1);
+            localStorage.setItem('products', JSON.stringify(products));
+            window.location.reload();
+        }
+
+        function filterProducts() {
+            const search = document.getElementById('search').value.toLowerCase();
+            const category = document.getElementById('category').value;
+            const sort = document.getElementById('sort').value;
+            let products = JSON.parse(localStorage.getItem('products')) || [];
+
+            // Debug: Check if products are loaded
+            console.log('Loaded products:', products);
+
+            // Filter and sort products
+            products = products.filter(product => {
+                const matchesSearch = !search || product.name.toLowerCase().includes(search);
+                const matchesCategory = category === '' || product.category === category;
+                return matchesSearch && matchesCategory;
+            });
+
+            if (sort === 'price-asc') {
+                products.sort((a, b) => a.price - b.price);
+            } else if (sort === 'price-desc') {
+                products.sort((a, b) => b.price - a.price);
+            } else if (sort === 'name-asc') {
+                products.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (sort === 'name-desc') {
+                products.sort((a, b) => b.name.localeCompare(a.name));
+            }
+
+            // Debug: Check if products are filtered and sorted
+            console.log('Filtered and sorted products:', products);
+
+            const productItems = document.getElementById('productItems');
+            productItems.innerHTML = '';
+
+            products.forEach((product, index) => {
+                const productItem = document.createElement('div');
+                productItem.className = 'product-item';
+
+                const img = document.createElement('img');
+                img.src = product.image || 'default-image.png';
+                img.alt = product.name;
+                productItem.appendChild(img);
+
+                const details = document.createElement('div');
+                details.className = 'details';
+
+                const productName = document.createElement('p');
+                productName.textContent = `Product Name: ${product.name}`;
+                details.appendChild(productName);
+
+                const brand = document.createElement('p');
+                brand.textContent = `Brand: ${product.brand}`;
+                details.appendChild(brand);
+
+                const price = document.createElement('p');
+                price.textContent = `Price: ₱${product.price}`;
+                details.appendChild(price);
+
+                const weightVolume = document.createElement('p');
+                weightVolume.textContent = `Weight/Volume: ${product.weight}`;
+                details.appendChild(weightVolume);
+
+                const quantity = document.createElement('p');
+                quantity.textContent = `Quantity: ${product.quantity}`;
+                details.appendChild(quantity);
+
+                const store = document.createElement('p');
+                store.textContent = `Store: ${product.store}`;
+                details.appendChild(store);
+
+                productItem.appendChild(details);
+
+                const editDeleteButtons = document.createElement('div');
+                editDeleteButtons.className = 'edit-delete-buttons';
+
+                const editIcon = document.createElement('i');
+                editIcon.className = 'fas fa-edit';
+                editIcon.onclick = () => editProduct(index);
+                editDeleteButtons.appendChild(editIcon);
+
+                const deleteIcon = document.createElement('i');
+                deleteIcon.className = 'fas fa-trash';
+                deleteIcon.onclick = () => deleteProduct(index);
+                editDeleteButtons.appendChild(deleteIcon);
+
+                productItem.appendChild(editDeleteButtons);
+
+                const cartIconContainer = document.createElement('div');
+                cartIconContainer.className = 'cart-icon-container';
+
+                const cartIcon = document.createElement('i');
+                cartIcon.className = 'fas fa-shopping-cart';
+                cartIcon.onclick = () => addToCart(product);
+                cartIconContainer.appendChild(cartIcon);
+
+                productItem.appendChild(cartIconContainer);
+
+                productItems.appendChild(productItem);
+            });
+
+            // Debug: Check if product items are appended to the page
+            console.log('Product items appended.');
+        }
+
+        document.addEventListener('DOMContentLoaded', filterProducts);
+        document.getElementById('search').addEventListener('input', filterProducts);
+        document.getElementById('category').addEventListener('change', filterProducts);
+        document.getElementById('sort').addEventListener('change', filterProducts);
+        updateCartCount();
+    </script>
+</body>
+</html>
